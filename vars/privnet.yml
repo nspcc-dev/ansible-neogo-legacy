@@ -1,0 +1,13 @@
+---
+
+neo_go_seed_list:
+    - '127.0.0.1:20334'
+neo_go_standby_validators:
+    - '02b3622bf4017bdfe317c58aed5f4c753f206b7db896046fa7d774bbc4bf7f8dc2'
+
+# privnet wallet parameters
+neo_go_unlock_wallet: true
+neo_go_wallet_content: "{{ lookup('file', 'privnet.wallet.json') }}"
+neo_go_wallet_pass: 'one'
+
+neo_go_db_dump_name: 'dump.privnet'

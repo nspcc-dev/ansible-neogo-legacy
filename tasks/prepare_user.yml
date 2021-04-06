@@ -1,0 +1,25 @@
+---
+
+ name: Ensure there is neo-go group
+  group:
+    name: "{{ neo_go_group }}"
+    system: yes
+
+- name: Ensure there is neo-go user
+  user:
+    name: "{{ neo_go_user }}"
+    password: !
+    shell: /usr/sbin/nologin
+    home: "{{ neo_go_dir }}"
+    system: yes
+    group: "{{ neo_go_group }}"
+
+- name: Get uid for neo-go user
+  getent:
+    database: passwd
+    key: "{{ neo_go_user }}"
+
+- name: Get gid for neo-go user
+  getent:
+    database: group
+    key: "{{ neo_go_group }}"

@@ -1,0 +1,68 @@
+---
+
+- name: Load network specific variables
+  include_vars: "{{ neo_go_network+'.yml' }}"
+
+- name: Prepare user to run Neo2
+  include: 'prepare_user.yml'
+
+- name: Ensure data directory exists
+  file:
+    state: directory
+    path: "{{ neo_go_dir }}"
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"
+
+- name: Ensure configuration directory exists
+  file:
+    state: directory
+    path: "{{ neo_go_conf_dir }}"
+    owner: "root"
+
+- name: Prepare Neo Go config for {{ neo_go_network }}
+  template:
+    src: "protocol.network.yml.j2"
+    dest: "{{ neo_go_conf_dir }}/protocol.{{ neo_go_network }}.yml"
+    owner: '{{ neo_go_user }}'
+    group: '{{ neo_go_group }}'
+    mode: '0640'
+
+- name: Prepare Neo Wallet
+  copy:
+    dest: "{{ neo_go_wallet_path }}"
+    content: "{{ neo_go_wallet_content }}"
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"
+    mode: "0640"
+  when: (neo_go_wallet_content is defined) and (neo_go_wallet_content|length > 0)
+
+- name: Prepare configuration for TLS
+  include: "configure_tls.yml"
+  when: neo_go_tls_enabled
+
+- name: Restore DB from dump
+  include: "db_restore.yml"
+  when: neo_go_db_dump_restore
+
+- name: Force debops.ferm run
+  include_role:
+    name: debops.debops.ferm
+  vars:
+    ferm__dependent_rules:
+      - "{{ neo_go__ferm__dependent_rules }}"
+  when: neo_go_debops_ferm_import | bool
+
+- name: Install and run NeoGo Node using Docker Compose
+  include: "install_compose.yml"
+  when: neo_go_use_compose
+
+- name: Install and run NeoGo Node using SystemD
+  include: "install_compose.yml"
+  when: neo_go_use_systemd
+
+- name: Ensure Neo Go service runs
+  systemd:
+    name: "neo-go-{{ neo_go_network }}.service"
+    state: "restarted"
+    enabled: yes
+    daemon_reload: yes

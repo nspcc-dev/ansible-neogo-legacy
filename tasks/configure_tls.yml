@@ -1,0 +1,15 @@
+---
+
+- name: Copy SSL certificate
+  copy:
+    src: "{{ neo_go_tls_cert_path }}"
+    dest: "{{ neo_go_conf_dir }}/serv.crt"
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"
+
+- name: Copy SSL key
+  copy:
+    src: "{{ neo_go_tls_key_path }}"
+    dest: "{{ neo_go_conf_dir }}/serv.key"
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"

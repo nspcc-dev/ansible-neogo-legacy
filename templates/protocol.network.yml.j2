@@ -1,0 +1,73 @@
+ProtocolConfiguration:
+  Magic: {{ neo_go_magic }}
+  AddressVersion: 23
+  SecondsPerBlock: {{ neo_go_seconds_per_block }}
+  EnableStateRoot: {{ neo_go_enable_stateroot }}
+  StateRootEnableIndex: {{ neo_go_stateroot_enable_index }}
+  KeepOnlyLatestState: {{ neo_go_keep_latest_state }}
+  MemPoolSize: 50000
+  LowPriorityThreshold: {{ neo_go_low_priority_th }}
+  StandbyValidators:
+{% for v in neo_go_standby_validators %}
+  - {{ v }}
+{% endfor %}
+  SeedList:
+{% for s in neo_go_seed_list %}
+  - {{ s }}
+{% endfor %}
+  SystemFee:
+    EnrollmentTransaction: {{ neo_go_enrollment_transaction_fee }}
+    IssueTransaction: {{ neo_go_issue_transaction_fee }}
+    PublishTransaction: {{ neo_go_publish_transaction_fee }}
+    RegisterTransaction: {{ neo_go_register_transaction_fee }}
+  VerifyBlocks: true
+  VerifyTransactions: false
+  FreeGasLimit: {{ neo_go_free_gas_limit }}
+  MaxTransactionsPerBlock: {{ neo_go_max_tx_per_block }}
+  MaxFreeTransactionsPerBlock: {{ neo_go_max_free_tx_per_block }}
+  MaxFreeTransactionSize: 1024
+  MinimumNetworkFee: 0
+  FeePerExtraByte: 0.00001
+
+ApplicationConfiguration:
+  DBConfiguration:
+    Type: "boltdb"
+    BoltDBOptions:
+      FilePath: "{{ neo_go_dir }}/{{ neo_go_network }}.bolt"
+  Address: {{ neo_go_bind_address }}
+  NodePort: {{ neo_go_p2p_port }}
+  Relay: true
+  DialTimeout: 3
+  ProtoTickInterval: 2
+  PingInterval: 30
+  PingTimeout: 90
+  MaxPeers: {{ neo_go_max_peers }}
+  MinPeers: {{ neo_go_min_peers }}
+  AttemptConnPeers: 20
+  RPC:
+    Enabled: true
+    EnableCORSWorkaround: true
+    Address: {{ neo_go_bind_address }}
+    Port: {{ neo_go_rpc_port }}
+    MaxGasInvoke: 20
+{% if neo_go_tls_enabled %}
+    TLSConfig:
+      Enabled: true
+      Address: {{ neo_go_bind_address }}
+      Port: {{ neo_go_tls_port }}
+      CertFile: {{ neo_go_conf_dir }}/serv.crt
+      KeyFile: {{ neo_go_conf_dir }}/serv.key
+{% endif %}
+  Prometheus:
+    Enabled: {{ neo_go_monitoring_enabled }}
+    Address: {{ neo_go_bind_address }}
+    Port: {{ neo_go_monitoring_port }}
+  Pprof:
+    Enabled: {{ neo_go_pprof_enabled }}
+    Address: {{ neo_go_bind_address }}
+    Port: {{ neo_go_pprof_port }}
+{% if neo_go_unlock_wallet %}
+  UnlockWallet:
+    Path: "{{ neo_go_wallet_path }}"
+    Password: "{{ neo_go_wallet_pass }}"
+{% endif %}

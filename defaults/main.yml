@@ -1,0 +1,182 @@
+---
+neo_go_user: neo-go
+neo_go_group: neo-go
+
+neo_go_instance_name: neo-go
+
+neo_go_dir: '/var/lib/neo-go'
+neo_go_conf_dir: "/etc/neo-go"
+
+# available networks:
+# - mainnet
+# - testnet
+# - privnet
+neo_go_network: 'mainnet'
+
+neo_go_db_dump_restore: false
+neo_go_db_dump_name: 'dump.privnet'
+neo_go_db_dump_url: ''
+
+neo_go_unlock_wallet: false
+neo_go_wallet_path: "{{ neo_go_conf_dir }}/wallet.json"
+neo_go_wallet_pass: 'Th3r315N05p00n!'
+neo_go_wallet_content: ''
+
+neo_go_network_ports:
+    'mainnet':
+        'p2p': '10333'
+        'rpc': '10332'
+        'tls': '10331'
+        'magic': '7630401'
+        'address': '0.0.0.0'
+    'testnet':
+        'p2p': '20333'
+        'rpc': '20332'
+        'tls': '20331'
+        'magic': '1953787457'
+        'address': '0.0.0.0'
+    'privnet':
+        'p2p': '20334'
+        'rpc': '30333'
+        'magic': '56753'
+        'address': '0.0.0.0'
+
+neo_go_p2p_port: '{{ neo_go_network_ports[neo_go_network].p2p }}'
+neo_go_p2p_allow: []
+neo_go_p2p_group_allow: []
+neo_go_p2p_host_allow: []
+
+neo_go_bind_address: '{{ neo_go_network_ports[neo_go_network].address }}'
+
+neo_go_tls_enabled: false
+neo_go_tls_port: '{{ neo_go_network_ports[neo_go_network].tls }}'
+neo_go_tls_cert_path: 'cert.crt'
+neo_go_tls_key_path: 'private.key'
+
+neo_go_rpc_port: '{{ neo_go_network_ports[neo_go_network].rpc }}'
+neo_go_rpc_allow: []
+neo_go_rpc_group_allow: []
+neo_go_rpc_host_allow: []
+
+neo_go_stateroot_enabled: False
+neo_go_stateroot_unlock_wallet: false
+neo_go_stateroot_wallet_path: "{{ neo_go_conf_dir }}/wallet.json"
+neo_go_stateroot_wallet_pass: 'Th3r315N05p00n!'
+neo_go_stateroot_wallet_content: ''
+
+neo_go_network_stateroots:
+    'mainnet':
+        'enable': 'true'
+        'index': '6016000'
+    'testnet':
+        'enable': 'true'
+        'index': '4380100'
+    'privnet':
+        'enable': 'false'
+        'index': '0'
+
+neo_go_enable_stateroot: '{{ neo_go_network_stateroots[neo_go_network].enable }}'
+neo_go_stateroot_enable_index: '{{ neo_go_network_stateroots[neo_go_network].index }}'
+neo_go_keep_latest_state: false
+
+neo_go_monitoring_enabled: true
+neo_go_monitoring_port: 2112
+neo_go_monitoring_allow: []
+neo_go_monitoring_group_allow: []
+neo_go_monitoring_host_allow: []
+
+neo_go_pprof_enabled: false
+neo_go_pprof_port: 2113
+neo_go_pprof_allow: []
+neo_go_pprof_group_allow: []
+neo_go_pprof_host_allow: []
+
+neo_go_version: 'v0.78.3'
+neo_go_docker_image: "nspccdev/neo-go:{{ neo_go_version }}"
+neo_go_release_url: "https://github.com/nspcc-dev/neo-go/releases/download/{{ neo_go_version }}/neo-go-linux-amd64"
+neo_go_bin_path: "/usr/local/bin/neo-go"
+neo_go_download_fresh_binary: true
+neo_go_use_compose: false
+neo_go_compose_path: "/etc/docker/compose"
+neo_go_use_systemd: true
+
+# neo node config parameters
+neo_go_seconds_per_block: '15'
+neo_go_magic: '{{ neo_go_network_ports[neo_go_network].magic }}'
+neo_go_seed_list: []
+neo_go_standby_validators: []
+neo_go_min_peers: "{{ (neo_go_network == 'privnet')|ternary(0, 5) }}"
+neo_go_max_peers: '100'
+neo_go_low_priority_th: '0.001'
+
+# TODO: policies for each network
+neo_go_limits:
+    'mainnet':
+        'free_gas_limit': '{0: 10.0, 6195000: 50.0}'
+        'max_tx_per_block': '{0: 500, 6195000: 200}'
+        'max_free_tx_per_block': '{0: 20, 6195000: 199}'
+    'testnet':
+        'free_gas_limit': '{0: 10.0, 4840000: 50.0}'
+        'max_tx_per_block': '{0: 500, 4840000: 200}'
+        'max_free_tx_per_block': '{0: 20, 4840000: 199}'
+    'privnet':
+        'free_gas_limit': '10.0'
+        'max_tx_per_block': '500'
+        'max_free_tx_per_block': '20'
+
+neo_go_free_gas_limit: "{{ neo_go_limits[neo_go_network].free_gas_limit }}"
+neo_go_max_tx_per_block: "{{ neo_go_limits[neo_go_network].max_tx_per_block }}"
+neo_go_max_free_tx_per_block: "{{ neo_go_limits[neo_go_network].max_free_tx_per_block }}"
+
+# transaction fees
+neo_go_enrollment_transaction_fee: 1000
+neo_go_issue_transaction_fee: 500
+neo_go_publish_transaction_fee: 500
+neo_go_register_transaction_fee: 10000
+
+# Force debops.ferm run via role import
+# May be useful when you need to have multiple instances with different
+# firewall rules for each one.
+neo_go_debops_ferm_import: False
+
+# firewall configuration for neo-go to be applied with debops.ferm role
+neo_go__ferm__dependent_rules:
+  - type: 'accept'
+    name: 'neo_go_{{ neo_go_network }}_p2p'
+    dport: [ '{{ neo_go_p2p_port }}' ]
+    saddr: '{{ neo_go_p2p_allow + neo_go_p2p_group_allow + neo_go_p2p_host_allow }}'
+    protocol: 'tcp'
+    role: 'ansible-neogo-legacy'
+    rule_state: "present"
+
+  - type: 'accept'
+    name: 'neo_go_{{ neo_go_network }}_rpc'
+    dport: [ '{{ neo_go_rpc_port }}' ]
+    saddr: '{{ neo_go_rpc_allow + neo_go_rpc_group_allow + neo_go_rpc_host_allow }}'
+    protocol: 'tcp'
+    role: 'ansible-neogo-legacy'
+    rule_state: "present"
+
+  - type: 'accept'
+    name: 'neo_go_{{ neo_go_network }}_monitoring'
+    dport: [ '{{ neo_go_monitoring_port }}' ]
+    saddr: '{{ neo_go_monitoring_allow + neo_go_monitoring_group_allow + neo_go_monitoring_host_allow }}'
+    protocol: 'tcp'
+    role: 'ansible-neogo-legacy'
+    rule_state: "{{ 'present' if neo_go_monitoring_enabled else 'absent' }}"
+
+  - type: 'accept'
+    name: 'neo_go_{{ neo_go_network }}_pprof'
+    dport: [ '{{ neo_go_pprof_port }}' ]
+    saddr: '{{ neo_go_pprof_allow + neo_go_pprof_group_allow + neo_go_pprof_host_allow }}'
+    protocol: 'tcp'
+    role: 'ansible-neogo-legacy'
+    rule_state: "{{ 'present' if neo_go_pprof_enabled else 'absent' }}"
+
+  - type: 'accept'
+    name: 'neo_go_{{ neo_go_network }}_tls'
+    dport: [ '{{ neo_go_tls_port }}' ]
+    saddr: '0.0.0.0/0'
+    protocol: 'tcp'
+    role: 'ansible-neogo-legacy'
+    rule_state: "{{ 'present' if neo_go_tls_enabled else 'absent' }}"

@@ -1,0 +1,14 @@
+[Unit]
+Description=Neo2 node on neogo{{ neo_go_instance_name }} in Docker
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/docker-compose up
+ExecStop=/usr/bin/docker-compose down
+Restart=always
+WorkingDirectory={{ neo_go_compose_path }}/{{ neo_go_instance_name }}
+
+[Install]
+WantedBy=multi-user.target

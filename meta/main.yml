@@ -1,0 +1,16 @@
+galaxy_info:
+  author: NSPCC Operations <ops@nspcc.ru>
+  description: Neo2 Node deployment
+  company: NSPCC
+  license: GPLv3
+  min_ansible_version: 2.8.0
+  role_name: 'neogo-legacy'
+  platforms:
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+  galaxy_tags:
+    - neo
+    - blockchain
+dependencies: []

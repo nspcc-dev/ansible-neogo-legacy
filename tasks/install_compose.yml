@@ -1,0 +1,16 @@
+---
+
+- name: Ensure docker-compose directory exists
+  file:
+    state: directory
+    path: "{{ neo_go_compose_path }}/{{ neo_go_instance_name }}"
+
+- name: Copy docker-compose file
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "{{ neo_go_compose_path }}/{{ neo_go_instance_name }}/docker-compose.yml"
+
+- name: Copy systemd unit file
+  template:
+    src: "neogo.service.compose.j2"
+    dest: "/etc/systemd/system/neo-go-{{ neo_go_network }}.service"

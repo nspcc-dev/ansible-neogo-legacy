@@ -1,0 +1,39 @@
+---
+
+- name: Download blockchain data
+  get_url:
+    url: "{{ neo_go_db_dump_url }}"
+    dest: "{{ neo_go_db_dump_name }}"
+  when: (neo_go_db_dump_url is defined) and (neo_go_db_dump_url|length > 0)
+
+- name: Copy blockchain DB dump
+  copy:
+    src: "{{ neo_go_db_dump_name }}"
+    dest: "{{ neo_go_dir }}"
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"
+  register: db_changed_flag
+
+- name: Stop the Service
+  systemd:
+    name: "neo-go-{{ neo_go_network }}.service"
+    state: "stopped"
+
+- name: Remove obsolete DB if exists
+  file:
+    path: "{{ neo_go_dir }}/{{ neo_go_network }}.bolt"
+    state: absent
+
+- name: Restore DB from dump
+  command: |
+      neo-go db restore
+      --{{ neo_go_network }}
+      --config-path={{ neo_go_conf_dir }}
+      --in {{ neo_go_dir }}/{{ neo_go_db_dump_name }}
+
+- name: Set an owner for DB file
+  file:
+    path: "{{ neo_go_dir }}/{{ neo_go_network }}.bolt"
+    state: file
+    owner: "{{ neo_go_user }}"
+    group: "{{ neo_go_group }}"
