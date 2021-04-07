@@ -3,10 +3,10 @@
 version: '2.4'
 
 services:
-  {{ neogo__compose_instance }}:
+  neogo{{ neogo__instance }}:
     image: {{ neogo__docker_image }}
-    container_name: {{ neogo__compose_instance }}
-    hostname: {{ neogo__compose_instance }}
+    container_name: neogo{{ neogo__instance }}
+    hostname: neogo{{ neogo__instance }}
     network_mode: host
     stop_signal: SIGKILL
     user: "{{ getent_passwd[neogo__user][1] }}:{{ getent_group[neogo__user][1] }}"
