@@ -1,30 +1,30 @@
 ProtocolConfiguration:
-  Magic: {{ neo_go_magic }}
+  Magic: {{ neogo__magic }}
   AddressVersion: 23
-  SecondsPerBlock: {{ neo_go_seconds_per_block }}
-  EnableStateRoot: {{ neo_go_enable_stateroot }}
-  StateRootEnableIndex: {{ neo_go_stateroot_enable_index }}
-  KeepOnlyLatestState: {{ neo_go_keep_latest_state }}
+  SecondsPerBlock: {{ neogo__seconds_per_block }}
+  EnableStateRoot: {{ neogo__stateroot_enabled }}
+  StateRootEnableIndex: {{ neogo__stateroot_enable_index }}
+  KeepOnlyLatestState: {{ neogo__stateroot_keep_latest_state }}
   MemPoolSize: 50000
-  LowPriorityThreshold: {{ neo_go_low_priority_th }}
+  LowPriorityThreshold: {{ neogo__low_priority_th }}
   StandbyValidators:
-{% for v in neo_go_standby_validators %}
+{% for v in neogo__standby_validators %}
   - {{ v }}
 {% endfor %}
   SeedList:
-{% for s in neo_go_seed_list %}
+{% for s in neogo__seed_list %}
   - {{ s }}
 {% endfor %}
   SystemFee:
-    EnrollmentTransaction: {{ neo_go_enrollment_transaction_fee }}
-    IssueTransaction: {{ neo_go_issue_transaction_fee }}
-    PublishTransaction: {{ neo_go_publish_transaction_fee }}
-    RegisterTransaction: {{ neo_go_register_transaction_fee }}
+    EnrollmentTransaction: {{ neogo__enrollment_transaction_fee }}
+    IssueTransaction: {{ neogo__issue_transaction_fee }}
+    PublishTransaction: {{ neogo__publish_transaction_fee }}
+    RegisterTransaction: {{ neogo__register_transaction_fee }}
   VerifyBlocks: true
   VerifyTransactions: false
-  FreeGasLimit: {{ neo_go_free_gas_limit }}
-  MaxTransactionsPerBlock: {{ neo_go_max_tx_per_block }}
-  MaxFreeTransactionsPerBlock: {{ neo_go_max_free_tx_per_block }}
+  FreeGasLimit: {{ neogo__free_gas_limit }}
+  MaxTransactionsPerBlock: {{ neogo__max_tx_per_block }}
+  MaxFreeTransactionsPerBlock: {{ neogo__max_free_tx_per_block }}
   MaxFreeTransactionSize: 1024
   MinimumNetworkFee: 0
   FeePerExtraByte: 0.00001
@@ -33,41 +33,45 @@ ApplicationConfiguration:
   DBConfiguration:
     Type: "boltdb"
     BoltDBOptions:
-      FilePath: "{{ neo_go_dir }}/{{ neo_go_network }}.bolt"
-  Address: {{ neo_go_bind_address }}
-  NodePort: {{ neo_go_p2p_port }}
+      FilePath: "{{ neogo__data_dir }}/{{ neogo__network }}.bolt"
+  Address: {{ neogo__bind_address }}
+  NodePort: {{ neogo__p2p_port }}
   Relay: true
   DialTimeout: 3
   ProtoTickInterval: 2
   PingInterval: 30
   PingTimeout: 90
-  MaxPeers: {{ neo_go_max_peers }}
-  MinPeers: {{ neo_go_min_peers }}
+  MaxPeers: {{ neogo__max_peers }}
+  MinPeers: {{ neogo__min_peers }}
   AttemptConnPeers: 20
   RPC:
     Enabled: true
     EnableCORSWorkaround: true
-    Address: {{ neo_go_bind_address }}
-    Port: {{ neo_go_rpc_port }}
+    Address: {{ neogo__bind_address }}
+    Port: {{ neogo__rpc_port }}
     MaxGasInvoke: 20
-{% if neo_go_tls_enabled %}
+{% if neogo__tls_enabled %}
     TLSConfig:
       Enabled: true
-      Address: {{ neo_go_bind_address }}
-      Port: {{ neo_go_tls_port }}
-      CertFile: {{ neo_go_conf_dir }}/serv.crt
-      KeyFile: {{ neo_go_conf_dir }}/serv.key
+      Address: {{ neogo__bind_address }}
+      Port: {{ neogo__tls_port }}
+      CertFile: {{ neogo__tls_cert_path }}
+      KeyFile: {{ neogo__tls_key_path }}
 {% endif %}
+{% if neogo__prometheus_enabled %}
   Prometheus:
-    Enabled: {{ neo_go_monitoring_enabled }}
-    Address: {{ neo_go_bind_address }}
-    Port: {{ neo_go_monitoring_port }}
+    Enabled: true
+    Address: {{ neogo__bind_address }}
+    Port: {{ neogo__prometheus_port }}
+{% endif %}
+{% if neogo__pprof_enabled %}
   Pprof:
-    Enabled: {{ neo_go_pprof_enabled }}
-    Address: {{ neo_go_bind_address }}
-    Port: {{ neo_go_pprof_port }}
-{% if neo_go_unlock_wallet %}
+    Enabled: true
+    Address: {{ neogo__bind_address }}
+    Port: {{ neogo__pprof_port }}
+{% endif %}
+{% if neogo__wallet_unlock %}
   UnlockWallet:
-    Path: "{{ neo_go_wallet_path }}"
-    Password: "{{ neo_go_wallet_pass }}"
+    Path: "{{ neogo__wallet_path }}"
+    Password: "{{ neogo__wallet_pass }}"
 {% endif %}

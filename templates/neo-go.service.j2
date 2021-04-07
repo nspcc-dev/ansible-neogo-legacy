@@ -4,15 +4,15 @@ Requires=network.target
 
 [Service]
 Type=simple
-ExecStart={{ neo_go_bin_path }} node --{{ neo_go_network }} --config-path={{ neo_go_conf_dir }}
-User={{ neo_go_user }}
-Group={{ neo_go_group }}
+ExecStart={{ neogo__bin_path }} node --{{ neogo__network }} --config-path={{ neogo__conf_dir }}
+User={{ neogo__user }}
+Group={{ neogo__group }}
 Restart=always
 RestartSec=5
 StandardError=syslog
 SyslogIdentifier=neo-go
 PrivateTmp=true
-WorkingDirectory={{ neo_go_dir }}
+WorkingDirectory={{ neogo__data_dir }}
 
 [Install]
 WantedBy=multi-user.target

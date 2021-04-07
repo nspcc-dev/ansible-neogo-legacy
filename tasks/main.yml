@@ -1,68 +1,70 @@
 ---
 
-- name: Load network specific variables
-  include_vars: "{{ neo_go_network+'.yml' }}"
+- name: Test the run mode -- docker xor systemd
+  ansible.builtin.fail:
+    msg: "Define one of the options: neogo__use_systemd, neogo__use_compose, to True, another to False"
+  when: not ((neogo__use_compose and (not neogo__use_systemd)) or ((not neogo__use_compose) and neogo__use_systemd))
 
 - name: Prepare user to run Neo2
-  include: 'prepare_user.yml'
+  ansible.builtin.include: 'prepare_user.yml'
 
 - name: Ensure data directory exists
-  file:
+  ansible.builtin.file:
     state: directory
-    path: "{{ neo_go_dir }}"
-    owner: "{{ neo_go_user }}"
-    group: "{{ neo_go_group }}"
+    path: "{{ neogo__data_dir }}"
+    owner: "{{ neogo__user }}"
+    group: "{{ neogo__group }}"
 
 - name: Ensure configuration directory exists
-  file:
+  ansible.builtin.file:
     state: directory
-    path: "{{ neo_go_conf_dir }}"
+    path: "{{ neogo__conf_dir }}"
     owner: "root"
 
-- name: Prepare Neo Go config for {{ neo_go_network }}
-  template:
+- name: Prepare Neo Go config for {{ neogo__network }}
+  ansible.builtin.template:
     src: "protocol.network.yml.j2"
-    dest: "{{ neo_go_conf_dir }}/protocol.{{ neo_go_network }}.yml"
-    owner: '{{ neo_go_user }}'
-    group: '{{ neo_go_group }}'
+    dest: "{{ neogo__conf_dir }}/protocol.{{ neogo__network }}.yml"
+    owner: '{{ neogo__user }}'
+    group: '{{ neogo__group }}'
     mode: '0640'
 
 - name: Prepare Neo Wallet
-  copy:
-    dest: "{{ neo_go_wallet_path }}"
-    content: "{{ neo_go_wallet_content }}"
-    owner: "{{ neo_go_user }}"
-    group: "{{ neo_go_group }}"
+  ansible.builtin.copy:
+    dest: "{{ neogo__wallet_path }}"
+    content: "{{ neogo__wallet_content }}"
+    owner: "{{ neogo__user }}"
+    group: "{{ neogo__group }}"
     mode: "0640"
-  when: (neo_go_wallet_content is defined) and (neo_go_wallet_content|length > 0)
+  when: (neogo__wallet_content is defined) and (neogo__wallet_content|length > 0)
 
 - name: Prepare configuration for TLS
-  include: "configure_tls.yml"
-  when: neo_go_tls_enabled
+  ansible.builtin.include: "configure_tls.yml"
+  when: neogo__tls_enabled
 
 - name: Restore DB from dump
-  include: "db_restore.yml"
-  when: neo_go_db_dump_restore
+  ansible.builtin.include: "db_restore.yml"
+  when: neogo__db_dump_restore
 
 - name: Force debops.ferm run
-  include_role:
+  ansible.builtin.include_role:
     name: debops.debops.ferm
   vars:
     ferm__dependent_rules:
-      - "{{ neo_go__ferm__dependent_rules }}"
-  when: neo_go_debops_ferm_import | bool
+      - "{{ neogo__ferm__dependent_rules }}"
+  when: neogo__debops_ferm_import | bool
 
 - name: Install and run NeoGo Node using Docker Compose
-  include: "install_compose.yml"
-  when: neo_go_use_compose
+  ansible.builtin.include: "install_compose.yml"
+  when: neogo__use_compose
 
 - name: Install and run NeoGo Node using SystemD
-  include: "install_compose.yml"
-  when: neo_go_use_systemd
+  ansible.builtin.include: "install_systemd.yml"
+  when: neogo__use_systemd
 
 - name: Ensure Neo Go service runs
-  systemd:
-    name: "neo-go-{{ neo_go_network }}.service"
+  ansible.builtin.systemd:
+    name: "neo-go{{ neogo__instance }}.service"
     state: "restarted"
     enabled: yes
     daemon_reload: yes

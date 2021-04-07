@@ -3,15 +3,15 @@
 version: '2.4'
 
 services:
-  {{ neo_go_instance_name }}:
-    image: {{ neo_go_docker_image }}
-    container_name: {{ neo_go_instance_name }}
-    hostname: {{ neo_go_instance_name }}
+  {{ neogo__compose_instance }}:
+    image: {{ neogo__docker_image }}
+    container_name: {{ neogo__compose_instance }}
+    hostname: {{ neogo__compose_instance }}
     network_mode: host
     stop_signal: SIGKILL
-    user: "{{ getent_passwd[neo_go_user][1] }}:{{ getent_group[neo_go_user][1] }}"
+    user: "{{ getent_passwd[neogo__user][1] }}:{{ getent_group[neogo__user][1] }}"
     entrypoint: /usr/bin/neo-go
-    command: node --config-path {{ neo_go_conf_dir }} --{{ neo_go_network }}
+    command: node --config-path {{ neogo__conf_dir }} --{{ neogo__network }}
     volumes:
-    - {{ neo_go_dir }}:{{ neo_go_dir }}
-    - {{ neo_go_conf_dir }}:{{ neo_go_conf_dir }}
+    - {{ neogo__data_dir }}:{{ neogo__data_dir }}
+    - {{ neogo__conf_dir }}:{{ neogo__conf_dir }}

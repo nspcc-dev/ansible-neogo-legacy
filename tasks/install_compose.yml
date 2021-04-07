@@ -1,16 +1,16 @@
 ---
 
 - name: Ensure docker-compose directory exists
-  file:
+  ansible.builtin.file:
     state: directory
-    path: "{{ neo_go_compose_path }}/{{ neo_go_instance_name }}"
+    path: "{{ neogo__compose_path }}/{{ neogo__instance }}"
 
 - name: Copy docker-compose file
-  template:
+  ansible.builtin.template:
     src: "docker-compose.yml.j2"
-    dest: "{{ neo_go_compose_path }}/{{ neo_go_instance_name }}/docker-compose.yml"
+    dest: "{{ neogo__compose_path }}/{{ neogo__instance }}/docker-compose.yml"
 
 - name: Copy systemd unit file
-  template:
+  ansible.builtin.template:
     src: "neogo.service.compose.j2"
-    dest: "/etc/systemd/system/neo-go-{{ neo_go_network }}.service"
+    dest: "/etc/systemd/system/neo-go{{ neogo__instance }}.service"

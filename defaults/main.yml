@@ -1,28 +1,25 @@
 ---
-neo_go_user: neo-go
-neo_go_group: neo-go
 
-neo_go_instance_name: neo-go
+# User and group for neo-go to run and own files
+neogo__user: 'neo-go'
+neogo__group: 'neo-go'
 
-neo_go_dir: '/var/lib/neo-go'
-neo_go_conf_dir: "/etc/neo-go"
+# Instance name to have multiple neo-go nodes on the same host
+neogo__instance: ""
 
-# available networks:
+# Directory for configuration files and wallets
+neogo__conf_dir: "/etc/neo-go{{ neogo__instance }}"
+
+# Directory for chain database, snapshots and thing alike
+neogo__data_dir: '/var/lib/neo-go{{ neogo__instance }}'
+
+# Available Neo2 networks:
 # - mainnet
 # - testnet
 # - privnet
-neo_go_network: 'mainnet'
+neogo__network: 'mainnet'
 
-neo_go_db_dump_restore: false
-neo_go_db_dump_name: 'dump.privnet'
-neo_go_db_dump_url: ''
-
-neo_go_unlock_wallet: false
-neo_go_wallet_path: "{{ neo_go_conf_dir }}/wallet.json"
-neo_go_wallet_pass: 'Th3r315N05p00n!'
-neo_go_wallet_content: ''
-
-neo_go_network_ports:
+neogo__network_opts:
     'mainnet':
         'p2p': '10333'
         'rpc': '10332'
@@ -35,82 +32,136 @@ neo_go_network_ports:
         'tls': '20331'
         'magic': '1953787457'
         'address': '0.0.0.0'
+        'standby_committee':
+          - '0327da12b5c40200e9f65569476bbff2218da4f32548ff43b6387ec1416a231ee8'
+          - '026ce35b29147ad09e4afe4ec4a7319095f08198fa8babbe3c56e970b143528d22'
+          - '0209e7fd41dfb5c2f8dc72eb30358ac100ea8c72da18847befe06eade68cebfcb9'
+          - '039dafd8571a641058ccc832c5e2111ea39b09c0bde36050914384f7a48bce9bf9'
+          - '038dddc06ce687677a53d54f096d2591ba2302068cf123c1f2d75c2dddc5425579'
+          - '02d02b1873a0863cd042cc717da31cea0d7cf9db32b74d4c72c01b0011503e2e22'
+          - '034ff5ceeac41acf22cd5ed2da17a6df4dd8358fcb2bfb1a43208ad0feaab2746b'
+        'seed_list':
+          - 'seed1.ngd.network:20333'
+          - 'seed2.ngd.network:20333'
+          - 'seed3.ngd.network:20333'
+          - 'seed4.ngd.network:20333'
+          - 'seed5.ngd.network:20333'
+          - 'seed6.ngd.network:20333'
+          - 'seed7.ngd.network:20333'
+          - 'seed8.ngd.network:20333'
+          - 'seed9.ngd.network:20333'
+          - 'seed10.ngd.network:20333'
     'privnet':
         'p2p': '20334'
         'rpc': '30333'
         'magic': '56753'
         'address': '0.0.0.0'
+        'standby_committee':
+          - '02b3622bf4017bdfe317c58aed5f4c753f206b7db896046fa7d774bbc4bf7f8dc2'
+        'seed_list':
+          - '127.0.0.1:20334'
 
-neo_go_p2p_port: '{{ neo_go_network_ports[neo_go_network].p2p }}'
-neo_go_p2p_allow: []
-neo_go_p2p_group_allow: []
-neo_go_p2p_host_allow: []
+# Default bind address
+neogo__bind_address: '0.0.0.0'
 
-neo_go_bind_address: '{{ neo_go_network_ports[neo_go_network].address }}'
+# Ports and options for each service
+neogo__p2p_port: '{{ neogo__network_opts[neogo__network].p2p }}'
+neogo__p2p_address: '{{ neogo__bind_address }}'
+neogo__p2p_allow: []
+neogo__p2p_group_allow: []
+neogo__p2p_host_allow: []
 
-neo_go_tls_enabled: false
-neo_go_tls_port: '{{ neo_go_network_ports[neo_go_network].tls }}'
-neo_go_tls_cert_path: 'cert.crt'
-neo_go_tls_key_path: 'private.key'
+neogo__rpc_enabled: True
+neogo__rpc_cors_kludge: False
+neogo__rpc_port: '{{ neogo__network_opts[neogo__network].rpc }}'
+neogo__rpc_address:  '{{ neogo__bind_address }}'
+neogo__rpc_allow: []
+neogo__rpc_group_allow: []
+neogo__rpc_host_allow: []
 
-neo_go_rpc_port: '{{ neo_go_network_ports[neo_go_network].rpc }}'
-neo_go_rpc_allow: []
-neo_go_rpc_group_allow: []
-neo_go_rpc_host_allow: []
+# TLS requires RPC to be enabled
+neogo__tls_enabled: false
+neogo__tls_port: '{{ neogo__network_opts[neogo__network].tls }}'
+neogo__tls_address:  '{{ neogo__bind_address }}'
+neogo__tls_cert_local: ""
+neogo__tls_key_local: ""
+neogo__tls_cert_path: "{{ neogo__conf_dir }}/serv.crt"
+neogo__tls_key_path: "{{ neogo__conf_dir }}/serv.key"
 
-neo_go_stateroot_enabled: False
-neo_go_stateroot_unlock_wallet: false
-neo_go_stateroot_wallet_path: "{{ neo_go_conf_dir }}/wallet.json"
-neo_go_stateroot_wallet_pass: 'Th3r315N05p00n!'
-neo_go_stateroot_wallet_content: ''
+neogo__prometheus_enabled: False
+neogo__prometheus_port: '2112'
+neogo__prometheus_address:  '{{ neogo__bind_address }}'
+neogo__prometheus_allow: []
+neogo__prometheus_group_allow: []
+neogo__prometheus_host_allow: []
 
-neo_go_network_stateroots:
+neogo__pprof_enabled: False
+neogo__pprof_port: '2113'
+neogo__pprof_address:  '{{ neogo__bind_address }}'
+neogo__pprof_allow: []
+neogo__pprof_group_allow: []
+neogo__pprof_host_allow: []
+
+# StateRoot description:
+# https://github.com/nspcc-dev/neo-go/blob/master-2.x/docs/neox.md
+neogo__stateroot_enabled: False
+neogo__stateroot_enable_index: "{{ neogo__stateroots[neogo__network].index }}"
+neogo__stateroot_keep_latest_state: false
+neogo__stateroot_unlock_wallet: false
+neogo__stateroot_wallet_path: "{{ neogo__conf_dir }}/wallet.json"
+neogo__stateroot_wallet_pass: 'Th3r315N05p00n!'
+neogo__stateroot_wallet_content: ''
+neogo__stateroots:
     'mainnet':
-        'enable': 'true'
         'index': '6016000'
     'testnet':
-        'enable': 'true'
         'index': '4380100'
     'privnet':
-        'enable': 'false'
         'index': '0'
 
-neo_go_enable_stateroot: '{{ neo_go_network_stateroots[neo_go_network].enable }}'
-neo_go_stateroot_enable_index: '{{ neo_go_network_stateroots[neo_go_network].index }}'
-neo_go_keep_latest_state: false
+# Node wallet options. Unlock the wallet if you run a consensus node.
+neogo__wallet_unlock: false
+neogo__wallet_path: "{{ neogo__conf_dir }}/wallet.json"
+neogo__wallet_pass: 'Th3r315N05p00n!'
+neogo__wallet_content: ''
 
-neo_go_monitoring_enabled: true
-neo_go_monitoring_port: 2112
-neo_go_monitoring_allow: []
-neo_go_monitoring_group_allow: []
-neo_go_monitoring_host_allow: []
+# Database restore from dump parameters
+neogo__db_dump_restore: false
+neogo__db_dump_name: 'dump.privnet'
+neogo__db_dump_url: "{{ neogo__db_dump_urls[neogo__network] }}"
+neogo__db_dump_urls:
+    'mainnet': 'https://packet.azureedge.net/neochain/mainnet/full/0-4865691/8376645C06F137E8A1D05B3A9EFA69F2/chain.acc.zip'
+    'testnet': 'https://packet.azureedge.net/neochain/testnet/full/0-3881413/E70092F3CC07C32933F593CD240678A1/chain.acc.zip'
+    'privnet': ''
 
-neo_go_pprof_enabled: false
-neo_go_pprof_port: 2113
-neo_go_pprof_allow: []
-neo_go_pprof_group_allow: []
-neo_go_pprof_host_allow: []
+neogo__version: 'v0.78.3'
 
-neo_go_version: 'v0.78.3'
-neo_go_docker_image: "nspccdev/neo-go:{{ neo_go_version }}"
-neo_go_release_url: "https://github.com/nspcc-dev/neo-go/releases/download/{{ neo_go_version }}/neo-go-linux-amd64"
-neo_go_bin_path: "/usr/local/bin/neo-go"
-neo_go_download_fresh_binary: true
-neo_go_use_compose: false
-neo_go_compose_path: "/etc/docker/compose"
-neo_go_use_systemd: true
+# Run Neo Node in Docker and specify parameters
+neogo__use_compose: false
+neogo__compose_path: "/etc/docker/compose/{{ neogo__compose_instance }}"
+neogo__docker_image: "nspccdev/neo-go:{{ neogo__version }}"
+neogo__compose_instance: 'neo-go'
 
-# neo node config parameters
-neo_go_seconds_per_block: '15'
-neo_go_magic: '{{ neo_go_network_ports[neo_go_network].magic }}'
-neo_go_seed_list: []
-neo_go_standby_validators: []
-neo_go_min_peers: "{{ (neo_go_network == 'privnet')|ternary(0, 5) }}"
-neo_go_max_peers: '100'
-neo_go_low_priority_th: '0.001'
+# Run Neo Node natively via SystemD and specify parameters
+neogo__use_systemd: true
+neogo__release_url: "https://github.com/nspcc-dev/neo-go/releases/download/{{ neogo__version }}/neo-go-linux-amd64"
+neogo__bin_path: "/usr/local/bin/neo-go"
+neogo__download_fresh_binary: true
 
-# TODO: policies for each network
-neo_go_limits:
+# Neo Node configuration parameters
+neogo__seconds_per_block: '15'
+neogo__magic: '{{ neogo__network_opts[neogo__network].magic }}'
+neogo__seed_list: '{{ neogo__network_opts[neogo__network].seed_list }}'
+neogo__standby_validators: '{{ neogo__network_opts[neogo__network].standby_committee }}'
+neogo__min_peers: "{{ (neogo__network == 'privnet')|ternary(0, 5) }}"
+neogo__max_peers: '100'
+neogo__low_priority_th: '0.001'
+# transaction fees
+neogo__enrollment_transaction_fee: 1000
+neogo__issue_transaction_fee: 500
+neogo__publish_transaction_fee: 500
+neogo__register_transaction_fee: 10000
+neogo__limits:
     'mainnet':
         'free_gas_limit': '{0: 10.0, 6195000: 50.0}'
         'max_tx_per_block': '{0: 500, 6195000: 200}'
@@ -123,60 +174,53 @@ neo_go_limits:
         'free_gas_limit': '10.0'
         'max_tx_per_block': '500'
         'max_free_tx_per_block': '20'
-
-neo_go_free_gas_limit: "{{ neo_go_limits[neo_go_network].free_gas_limit }}"
-neo_go_max_tx_per_block: "{{ neo_go_limits[neo_go_network].max_tx_per_block }}"
-neo_go_max_free_tx_per_block: "{{ neo_go_limits[neo_go_network].max_free_tx_per_block }}"
-
-# transaction fees
-neo_go_enrollment_transaction_fee: 1000
-neo_go_issue_transaction_fee: 500
-neo_go_publish_transaction_fee: 500
-neo_go_register_transaction_fee: 10000
+neogo__free_gas_limit: "{{ neogo__limits[neogo__network].free_gas_limit }}"
+neogo__max_tx_per_block: "{{ neogo__limits[neogo__network].max_tx_per_block }}"
+neogo__max_free_tx_per_block: "{{ neogo__limits[neogo__network].max_free_tx_per_block }}"
 
 # Force debops.ferm run via role import
 # May be useful when you need to have multiple instances with different
 # firewall rules for each one.
-neo_go_debops_ferm_import: False
+neogo__debops_ferm_import: False
 
 # firewall configuration for neo-go to be applied with debops.ferm role
 neo_go__ferm__dependent_rules:
   - type: 'accept'
-    name: 'neo_go_{{ neo_go_network }}_p2p'
-    dport: [ '{{ neo_go_p2p_port }}' ]
-    saddr: '{{ neo_go_p2p_allow + neo_go_p2p_group_allow + neo_go_p2p_host_allow }}'
+    name: 'neo_go_{{ neogo__network }}_p2p'
+    dport: [ '{{ neogo__p2p_port }}' ]
+    saddr: '{{ neogo__p2p_allow + neogo__p2p_group_allow + neogo__p2p_host_allow }}'
     protocol: 'tcp'
     role: 'ansible-neogo-legacy'
     rule_state: "present"
 
   - type: 'accept'
-    name: 'neo_go_{{ neo_go_network }}_rpc'
-    dport: [ '{{ neo_go_rpc_port }}' ]
-    saddr: '{{ neo_go_rpc_allow + neo_go_rpc_group_allow + neo_go_rpc_host_allow }}'
+    name: 'neo_go_{{ neogo__network }}_rpc'
+    dport: [ '{{ neogo__rpc_port }}' ]
+    saddr: '{{ neogo__rpc_allow + neogo__rpc_group_allow + neogo__rpc_host_allow }}'
     protocol: 'tcp'
     role: 'ansible-neogo-legacy'
     rule_state: "present"
 
   - type: 'accept'
-    name: 'neo_go_{{ neo_go_network }}_monitoring'
-    dport: [ '{{ neo_go_monitoring_port }}' ]
-    saddr: '{{ neo_go_monitoring_allow + neo_go_monitoring_group_allow + neo_go_monitoring_host_allow }}'
+    name: 'neo_go_{{ neogo__network }}_monitoring'
+    dport: [ '{{ neogo__prometheus_port }}' ]
+    saddr: '{{ neogo__prometheus_allow + neogo__prometheus_group_allow + neogo__prometheus_host_allow }}'
     protocol: 'tcp'
     role: 'ansible-neogo-legacy'
-    rule_state: "{{ 'present' if neo_go_monitoring_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__prometheus_enabled else 'absent' }}"
 
   - type: 'accept'
-    name: 'neo_go_{{ neo_go_network }}_pprof'
-    dport: [ '{{ neo_go_pprof_port }}' ]
-    saddr: '{{ neo_go_pprof_allow + neo_go_pprof_group_allow + neo_go_pprof_host_allow }}'
+    name: 'neo_go_{{ neogo__network }}_pprof'
+    dport: [ '{{ neogo__pprof_port }}' ]
+    saddr: '{{ neogo__pprof_allow + neogo__pprof_group_allow + neogo__pprof_host_allow }}'
     protocol: 'tcp'
     role: 'ansible-neogo-legacy'
-    rule_state: "{{ 'present' if neo_go_pprof_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__pprof_enabled else 'absent' }}"
 
   - type: 'accept'
-    name: 'neo_go_{{ neo_go_network }}_tls'
-    dport: [ '{{ neo_go_tls_port }}' ]
+    name: 'neo_go_{{ neogo__network }}_tls'
+    dport: [ '{{ neogo__tls_port }}' ]
     saddr: '0.0.0.0/0'
     protocol: 'tcp'
     role: 'ansible-neogo-legacy'
-    rule_state: "{{ 'present' if neo_go_tls_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__tls_enabled else 'absent' }}"
