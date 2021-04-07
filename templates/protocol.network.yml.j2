@@ -44,34 +44,36 @@ ApplicationConfiguration:
   MaxPeers: {{ neogo__max_peers }}
   MinPeers: {{ neogo__min_peers }}
   AttemptConnPeers: 20
+{% if neogo__wallet_unlock | bool %}
+  UnlockWallet:
+    Path: "{{ neogo__wallet_path }}"
+    Password: "{{ neogo__wallet_pass }}"
+{% endif %}
+{% if neogo__rpc_enabled | bool %}
   RPC:
     Enabled: true
-    EnableCORSWorkaround: true
-    Address: {{ neogo__bind_address }}
-    Port: {{ neogo__rpc_port }}
     MaxGasInvoke: 20
-{% if neogo__tls_enabled %}
+    EnableCORSWorkaround: {{ neogo__rpc_cors_kludge }}
+    Address: {{ neogo__rpc_address }}
+    Port: {{ neogo__rpc_port }}
+{% endif %}
+{% if neogo__tls_enabled | bool %}
     TLSConfig:
       Enabled: true
-      Address: {{ neogo__bind_address }}
+      Address: {{ neogo__tls_address }}
       Port: {{ neogo__tls_port }}
       CertFile: {{ neogo__tls_cert_path }}
       KeyFile: {{ neogo__tls_key_path }}
 {% endif %}
-{% if neogo__prometheus_enabled %}
+{% if neogo__prometheus_enabled | bool %}
   Prometheus:
     Enabled: true
-    Address: {{ neogo__bind_address }}
+    Address: {{ neogo__prometheus_address }}
     Port: {{ neogo__prometheus_port }}
 {% endif %}
-{% if neogo__pprof_enabled %}
+{% if neogo__pprof_enabled | bool %}
   Pprof:
     Enabled: true
-    Address: {{ neogo__bind_address }}
+    Address: {{ neogo__pprof_address }}
     Port: {{ neogo__pprof_port }}
-{% endif %}
-{% if neogo__wallet_unlock %}
-  UnlockWallet:
-    Path: "{{ neogo__wallet_path }}"
-    Password: "{{ neogo__wallet_pass }}"
 {% endif %}

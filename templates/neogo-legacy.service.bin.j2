@@ -1,5 +1,5 @@
 [Unit]
-Description=Neo Go node
+Description=Neo Legacy node on neogo{{ neogo__instance }}
 Requires=network.target
 
 [Service]
@@ -10,7 +10,7 @@ Group={{ neogo__group }}
 Restart=always
 RestartSec=5
 StandardError=syslog
-SyslogIdentifier=neo-go
+SyslogIdentifier=neogo{{ neogo__instance }}
 PrivateTmp=true
 WorkingDirectory={{ neogo__data_dir }}
 

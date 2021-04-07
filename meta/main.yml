@@ -1,16 +1,23 @@
+---
+# Copyright (C) 2020 NSPCC <https://nspcc.ru/>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 galaxy_info:
-  author: NSPCC Operations <ops@nspcc.ru>
-  description: Neo2 Node deployment
-  company: NSPCC
-  license: GPLv3
-  min_ansible_version: 2.8.0
   role_name: 'neogo-legacy'
+  namespace: 'nspcc'
+  author: 'NSPCC Operations <ops@nspcc.ru>'
+  description: 'Neo Legacy node in Go'
+  company: 'NSPCC'
+  license: 'GPL-3.0-or-later'
+  min_ansible_version: '2.10.0'
+
   platforms:
     - name: Debian
       versions:
-        - stretch
         - buster
   galaxy_tags:
     - neo
     - blockchain
+    - neo-legacy
+    - neogo
 dependencies: []
