@@ -6,14 +6,15 @@ ProtocolConfiguration:
   StateRootEnableIndex: {{ neogo__stateroot_enable_index }}
   KeepOnlyLatestState: {{ neogo__stateroot_keep_latest_state }}
   MemPoolSize: 50000
+  NoBonusHeight: 8000000
   LowPriorityThreshold: {{ neogo__low_priority_th }}
   StandbyValidators:
 {% for v in neogo__standby_validators %}
-  - {{ v }}
+    - {{ v }}
 {% endfor %}
   SeedList:
 {% for s in neogo__seed_list %}
-  - {{ s }}
+    - {{ s }}
 {% endfor %}
   SystemFee:
     EnrollmentTransaction: {{ neogo__enrollment_transaction_fee }}
