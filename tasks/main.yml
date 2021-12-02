@@ -1,5 +1,6 @@
 ---
 
+# Prepare system
 - ansible.builtin.include: 'prepare_user.yml'
 
 - name: Ensure data directory exists
