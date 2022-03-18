@@ -1,15 +1,6 @@
 ---
 
-# Prepare system
-- ansible.builtin.include: 'prepare_user.yml'
-
-- name: Ensure data directory exists
-  ansible.builtin.file:
-    state: directory
-    path: "{{ neogo__data_dir }}"
-    owner: "{{ neogo__user }}"
-    group: "{{ neogo__group }}"
-    mode: '0750'
+- ansible.builtin.include_tasks: 'user.yml'
 
 - name: Create configuration directory parent
   ansible.builtin.file:
@@ -27,22 +18,13 @@
     group: "{{ neogo__group }}"
     mode: '0750'
 
-- ansible.builtin.include: download_binary.yml
-  when: not (neogo__use_compose | bool)
+- ansible.builtin.include_tasks: 'binary.yml'
 
-- name: Prepare Neo Wallet
-  ansible.builtin.copy:
-    dest: "{{ neogo__wallet_path }}"
-    content: "{{ neogo__wallet_content }}"
-    owner: "{{ neogo__user }}"
-    group: "{{ neogo__group }}"
-    mode: "0640"
-  when: (neogo__wallet_content is defined) and (neogo__wallet_content|length > 0)
+- ansible.builtin.include_tasks: 'wallet.yml'
 
-- ansible.builtin.include: prepare_tls.yml
-  when: neogo__tls_enabled | bool
+- ansible.builtin.include_tasks: 'tls.yml'
 
-- name: Prepare NeoGo config
+- name: Copy NeoGo config
   ansible.builtin.template:
     src: "protocol.network.yml.j2"
     dest: "{{ neogo__conf_dir }}/protocol.{{ neogo__network }}.yml"
@@ -50,9 +32,9 @@
     group: '{{ neogo__group }}'
     mode: '0640'
   notify:
-    - Restart neogo service
+    - Restart NeoGo service
 
-- name: Prepare docker-compose
+- name: Copy compose file
   ansible.builtin.template:
     src: 'docker-compose.yml.j2'
     dest: "{{ neogo__conf_dir }}/docker-compose.yml"
@@ -61,23 +43,23 @@
     mode: '0640'
   when: neogo__use_compose | bool
   notify:
-    - Restart neogo service
+    - Restart NeoGo service
 
-- name: Copy regular systemd unit file
+- name: Copy regular systemd unit
   ansible.builtin.template:
     src: "neogo-legacy.service.bin.j2"
     dest: "/etc/systemd/system/neogo{{ neogo__instance }}.service"
   when: not (neogo__use_compose | bool)
   notify:
-    - Restart neogo service
+    - Restart NeoGo service
 
-- name: Copy Docker systemd unit file
+- name: Copy dockerized systemd unit
   ansible.builtin.template:
     src: "neogo-legacy.service.compose.j2"
     dest: "/etc/systemd/system/neogo{{ neogo__instance }}.service"
   when: neogo__use_compose | bool
   notify:
-    - Restart neogo service
+    - Restart NeoGo service
 
 - name: Force debops.ferm run
   ansible.builtin.include_role:
@@ -86,10 +68,3 @@
     ferm__dependent_rules:
       - "{{ neogo__ferm__dependent_rules }}"
   when: neogo__debops_ferm_import | bool
-
-- name: Ensure NeoGo service runs
-  ansible.builtin.systemd:
-    name: "neogo{{ neogo__instance }}.service"
-    state: 'started'
-    enabled: yes
-    daemon_reload: yes
