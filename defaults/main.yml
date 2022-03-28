@@ -87,7 +87,7 @@ neogo__network_opts:
     'standby_validators':
       - '02b3622bf4017bdfe317c58aed5f4c753f206b7db896046fa7d774bbc4bf7f8dc2'
     'seed_list':
-      - '127.0.0.1:30332'
+      - 'localhost:30332'
 
 # Default bind address
 neogo__bind_address: '0.0.0.0'
