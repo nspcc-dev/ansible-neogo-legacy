@@ -10,4 +10,4 @@
   when: >
     (neogo__wallet_content is defined) and
     (neogo__wallet_content|length > 0)
-  notify: [ 'Restart NeoGo{{ neogo__instance }} service' ]
+  notify: [ 'Restart NeoGo{{ neogo__instance }}' ]
