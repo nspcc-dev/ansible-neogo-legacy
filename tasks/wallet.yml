@@ -3,7 +3,7 @@
 - name: Copy wallet
   ansible.builtin.copy:
     dest: "{{ neogo__wallet_path }}"
-    content: "{{ neogo__wallet_content }}"
+    content: "{{ neogo__wallet_content | to_nice_json(ensure_ascii=False) }}"
     owner: 'root'
     group: "{{ neogo__group }}"
     mode: '0660' # neogo legacy wants write permissions

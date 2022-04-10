@@ -26,10 +26,10 @@
 
 - name: Copy NeoGo config
   ansible.builtin.template:
-    src: "protocol.network.yml.j2"
+    src: 'protocol.network.yml.j2'
     dest: "{{ neogo__conf_dir }}/protocol.{{ neogo__network }}.yml"
     owner: 'root'
-    group: '{{ neogo__group }}'
+    group: "{{ neogo__group }}"
     mode: '0640'
   notify: [ 'Restart NeoGo{{ neogo__instance }}' ]
 
