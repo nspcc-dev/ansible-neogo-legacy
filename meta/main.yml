@@ -17,7 +17,7 @@ galaxy_info:
         - buster
   galaxy_tags:
     - neo
+    - neogo
     - blockchain
     - neo-legacy
-    - neogo
 dependencies: []
