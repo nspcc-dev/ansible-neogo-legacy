@@ -1,11 +1,11 @@
 ---
 
-# User and group for neo-go to run and own files
-neogo__user: 'neo-go'
-neogo__group: 'neo-go'
-
 # Instance name to have multiple neo-go nodes on the same host
-neogo__instance: ""
+neogo__instance: ''
+
+# User and group for neo-go to run and own files
+neogo__user: "neo-go{{ neogo__instance }}"
+neogo__group: "neo-go{{ neogo__instance }}"
 
 # Directory for configuration files and wallets
 neogo__conf_dir: "/etc/neo-go{{ neogo__instance }}"

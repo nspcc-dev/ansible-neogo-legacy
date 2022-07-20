@@ -1,6 +1,6 @@
 ---
 
-- ansible.builtin.include_tasks: 'user.yml'
+- ansible.builtin.include_tasks: user.yml
 
 - name: Create configuration directory parent
   ansible.builtin.file:
@@ -18,11 +18,11 @@
     group: "{{ neogo__group }}"
     mode: '0750'
 
-- ansible.builtin.include_tasks: 'binary.yml'
+- ansible.builtin.include_tasks: binary.yml
 
-- ansible.builtin.include_tasks: 'wallet.yml'
+- ansible.builtin.include_tasks: wallet.yml
 
-- ansible.builtin.include_tasks: 'tls.yml'
+- ansible.builtin.include_tasks: tls.yml
 
 - name: Copy NeoGo config
   ansible.builtin.template:
