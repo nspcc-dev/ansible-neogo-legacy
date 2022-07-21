@@ -141,7 +141,7 @@ neogo__stateroot_keep_latest_state: false
 neogo__wallet_unlock: false
 neogo__wallet_path: "{{ neogo__conf_dir }}/wallet.json"
 neogo__wallet_pass: 'Th3r315N05p00n!'
-neogo__wallet_content: ''
+neogo__wallet_struct: ''
 
 # NeoGo options
 neogo__version: 'v0.78.3'
