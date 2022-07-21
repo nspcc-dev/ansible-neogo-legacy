@@ -66,11 +66,11 @@ ApplicationConfiguration:
       CertFile: {{ neogo__tls_cert_path }}
       KeyFile: {{ neogo__tls_key_path }}
 {% endif %}
-{% if neogo__prometheus_enabled | bool %}
+{% if neogo__metrics_enabled | bool %}
   Prometheus:
     Enabled: true
-    Address: {{ neogo__prometheus_address }}
-    Port: {{ neogo__prometheus_port }}
+    Address: {{ neogo__metrics_address }}
+    Port: {{ neogo__metrics_port }}
 {% endif %}
 {% if neogo__pprof_enabled | bool %}
   Pprof:
