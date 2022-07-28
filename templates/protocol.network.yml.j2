@@ -32,9 +32,9 @@ ProtocolConfiguration:
 
 ApplicationConfiguration:
   DBConfiguration:
-    Type: "boltdb"
+    Type: 'boltdb'
     BoltDBOptions:
-      FilePath: "{{ neogo__data_dir }}/{{ neogo__network }}.bolt"
+      FilePath: '{{ neogo__data_dir }}/{{ neogo__network }}.bolt'
   Address: {{ neogo__bind_address }}
   NodePort: {{ neogo__p2p_port }}
   Relay: true
@@ -47,8 +47,8 @@ ApplicationConfiguration:
   AttemptConnPeers: 20
 {% if neogo__wallet_unlock | bool %}
   UnlockWallet:
-    Path: "{{ neogo__wallet_path }}"
-    Password: "{{ neogo__wallet_pass }}"
+    Path: '{{ neogo__wallet_path }}'
+    Password: '{{ neogo__wallet_pass }}'
 {% endif %}
 {% if neogo__rpc_enabled | bool %}
   RPC:
@@ -63,8 +63,8 @@ ApplicationConfiguration:
       Enabled: true
       Address: {{ neogo__tls_address }}
       Port: {{ neogo__tls_port }}
-      CertFile: {{ neogo__tls_cert_path }}
-      KeyFile: {{ neogo__tls_key_path }}
+      CertFile: {{ neogo__tls_cert_file }}
+      KeyFile: {{ neogo__tls_key_file }}
 {% endif %}
 {% if neogo__metrics_enabled | bool %}
   Prometheus:
