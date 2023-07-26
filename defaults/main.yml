@@ -138,7 +138,7 @@ neogo__stateroot_keep_latest_state: false
 neogo__wallet_unlock: false
 neogo__wallet_path: '{{ neogo__conf_dir }}/wallet.json'
 neogo__wallet_pass: ''
-neogo__wallet_struct: ''
+neogo__wallet: ''
 
 # Systemd unit may use docker compose to run neo-go in container, instead of
 # local binary.

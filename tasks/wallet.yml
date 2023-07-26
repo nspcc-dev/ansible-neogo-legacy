@@ -2,7 +2,7 @@
 
 - name: Copy NeoGo wallet
   ansible.builtin.copy:
-    content: '{{ neogo__wallet_struct | to_nice_json(ensure_ascii=False) }}'
+    src: '{{ neogo__wallet }}'
     dest: '{{ neogo__wallet_path }}'
     owner: 'root'
     group: '{{ neogo__group }}'
