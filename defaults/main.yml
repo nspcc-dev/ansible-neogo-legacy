@@ -185,7 +185,7 @@ neogo__ferm__dependent_rules:
     saddr: '{{ neogo__rpc_allow + neogo__rpc_group_allow + neogo__rpc_host_allow }}'
     protocol: 'tcp'
     role: 'neogo-legacy'
-    rule_state: "{{ 'present' if neogo__rpc_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__rpc_enabled and neogo__rpc_address not in ['localhost', '127.0.0.1', '::1'] else 'absent' }}"
 
   - type: 'accept'
     name: 'neogo{{ neogo__instance }}_tls'
@@ -194,7 +194,7 @@ neogo__ferm__dependent_rules:
     saddr: '{{ neogo__rpc_allow + neogo__rpc_group_allow + neogo__rpc_host_allow }}'
     protocol: 'tcp'
     role: 'neogo-legacy'
-    rule_state: "{{ 'present' if neogo__tls_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__tls_enabled and neogo__tls_address not in ['localhost', '127.0.0.1', '::1'] else 'absent' }}"
 
   - type: 'accept'
     name: 'neogo{{ neogo__instance }}_metrics'
@@ -203,7 +203,7 @@ neogo__ferm__dependent_rules:
     saddr: '{{ neogo__metrics_allow + neogo__metrics_group_allow + neogo__metrics_host_allow }}'
     protocol: 'tcp'
     role: 'neogo-legacy'
-    rule_state: "{{ 'present' if neogo__metrics_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__metrics_enabled and neogo__metrics_address not in ['localhost', '127.0.0.1', '::1'] else 'absent' }}"
 
   - type: 'accept'
     name: 'neogo{{ neogo__instance }}_pprof'
@@ -212,4 +212,4 @@ neogo__ferm__dependent_rules:
     saddr: '{{ neogo__pprof_allow + neogo__pprof_group_allow + neogo__pprof_host_allow }}'
     protocol: 'tcp'
     role: 'neogo-legacy'
-    rule_state: "{{ 'present' if neogo__pprof_enabled else 'absent' }}"
+    rule_state: "{{ 'present' if neogo__pprof_enabled and neogo__pprof_address not in ['localhost', '127.0.0.1', '::1'] else 'absent' }}"
