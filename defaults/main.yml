@@ -162,11 +162,6 @@ neogo__free_gas_limit: '{{ neogo__network_opts[neogo__network].free_gas_limit }}
 neogo__max_tx_per_block: '{{ neogo__network_opts[neogo__network].max_tx_per_block }}'
 neogo__max_free_tx_per_block: '{{ neogo__network_opts[neogo__network].max_free_tx_per_block }}'
 
-# Force debops.ferm run via role import
-# May be useful when you need to have multiple instances with different
-# firewall rules for each one.
-neogo__debops_ferm_import: False
-
 # firewall configuration to be applied with debops.ferm role
 neogo__ferm__dependent_rules:
   - type: 'accept'
